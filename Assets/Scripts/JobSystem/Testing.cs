@@ -161,14 +161,19 @@ public struct ReallyTouchParallelJob : IJobParallelFor
 
     public void Execute(int index)
     {
-        positionArray[index] += new float3(0, moveYArray[index] * deltime, 0f);
-        if (positionArray[index].y > 5f)
+        //重新定义变量，减少全局内存的访问
+        var positionA = positionArray;
+        var moveYA = moveYArray;
+        var delt = deltime;
+        
+        positionA[index] += new float3(0, moveYA[index] * delt, 0f);
+        if (positionA[index].y > 5f)
         {
-            moveYArray[index] = -math.abs(moveYArray[index]);
+            moveYA[index] = -math.abs(moveYA[index]);
         }
-        if (positionArray[index].y < -5f)
+        if (positionA[index].y < -5f)
         {
-            moveYArray[index] += math.abs(moveYArray[index]);
+            moveYA[index] += math.abs(moveYA[index]);
         }
         float value = 0f;
         for (int i = 0; i < 1000; i++)
